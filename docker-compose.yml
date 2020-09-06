@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  goapp:
+    build:
+      context: .
+    working_dir: /go/src/github.com/tabakazu/golang-webapi-demo
+    environment:
+      MYSQL_URL: 'root:@tcp(mysql:3306)/golang_webapi_demo_dev?charset=utf8&parseTime=True&loc=Local'
+      GO111MODULE: 'on'
+      GOPATH: /go
+    volumes:
+      - .:/go/src/github.com/tabakazu/golang-webapi-demo
+      - go_modules:/go/pkg/mod
+    stdin_open: true
+    tty: true
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      - MYSQL_DATABASE=golang_webapi_demo_dev
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  go_modules:
+  mysql_data:

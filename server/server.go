@@ -39,7 +39,8 @@ func Run() {
 
 func run(ctx context.Context) int {
 	termCh := make(chan os.Signal, 1)
-	d := db.NewMemoryDB()
+	// d := db.NewMemoryDB()
+	d := db.NewMySQLDB()
 	s := NewServer(8080, d)
 	errCh := make(chan error, 1)
 
