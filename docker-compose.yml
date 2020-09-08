@@ -7,6 +7,7 @@ services:
     working_dir: /go/src/github.com/tabakazu/golang-webapi-demo
     environment:
       MYSQL_URL: 'root:@tcp(mysql:3306)/golang_webapi_demo_dev?charset=utf8&parseTime=True&loc=Local'
+      POSTGRES_URL: "user=root password=root host=postgres dbname=golang_webapi_demo_dev sslmode=disable"
       GO111MODULE: 'on'
       GOPATH: /go
     volumes:
@@ -18,16 +19,28 @@ services:
       - '8080:8080'
     depends_on:
       - mysql
+      - postgres
 
   mysql:
     image: mysql:8.0
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=1
-      - MYSQL_DATABASE=golang_webapi_demo_dev
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: golang_webapi_demo_dev
     volumes:
       - mysql_data:/var/lib/mysql
+
+  postgres:
+    image: postgres:12.4
+    environment:
+      POSTGRES_DB: golang_webapi_demo_dev
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   go_modules:
   mysql_data:
+  postgres_data:
