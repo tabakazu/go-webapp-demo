@@ -35,3 +35,16 @@ CREATE TABLE items (
 ```bash
 $ docker-compose run --rm --service-ports goapp go run main.go
 ```
+
+### Check OpenAPI
+```bash
+$ docker-compose -f openapi/docker-compose.yml up --scale openapi-generator-cli=0
+```
+
+- [Swagger Editor](http://localhost:8001)
+- [Swagger UI](http://localhost:8002)
+
+### Generate Code with OpenAPI
+```bash
+$ docker-compose -f openapi/docker-compose.yml run --rm openapi-generator-cli generate -i /local/openapi.yaml -g go-server -o /local/examples/go-server
+```

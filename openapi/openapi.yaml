@@ -1,0 +1,61 @@
+openapi: 3.0.0
+
+info:
+  title: Web API Demo with Golang
+  version: 1.0.0
+
+servers:
+- url: http://localhost:8080
+  description: ローカル API サーバ
+
+paths:
+  /items:
+    get:
+      summary: アイテム一覧 API
+      description: アイテム一覧を取得
+      responses:
+        '200':
+          description: 取得成功
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Item'
+    post:
+      summary: アイテム作成 API
+      description: アイテムを作成
+      parameters:
+        - in: query
+          name: post
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                example: aaaaaaaa-1111-bbbb-2222-cccccccccccc
+              title:
+                type: string
+                example: my title 1
+          required: true
+          description: アイテムデータ
+      responses:
+        '201':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+
+components:
+  schemas:
+    Item:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          example: aaaaaaaa-1111-bbbb-2222-cccccccccccc
+        title:
+          type: string
+          example: my title 1
