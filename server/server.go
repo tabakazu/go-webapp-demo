@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	"github.com/tabakazu/golang-webapi-demo/db"
 )
 
@@ -14,13 +15,19 @@ type Server struct {
 }
 
 func NewServer(port int, d db.DB) *Server {
-	mux := http.NewServeMux()
-	mux.Handle("/items", &itemsHandler{db: d})
+	// Use default net/http pkg
+	m := http.NewServeMux()
+	m.Handle("/api/v1/items", &itemsHandler{db: d})
+
+	// Use gorilla/mux pkg
+	r := mux.NewRouter()
+	r.Handle("/api/v2/items", &itemsHandler{db: d})
+	m.Handle("/", r)
 
 	return &Server{
 		server: &http.Server{
 			Addr:    fmt.Sprintf(":%d", port),
-			Handler: mux,
+			Handler: m,
 		},
 	}
 }

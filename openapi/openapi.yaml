@@ -9,7 +9,7 @@ servers:
   description: ローカル API サーバ
 
 paths:
-  /items:
+  /api/v1/items:
     get:
       summary: アイテム一覧 API
       description: アイテム一覧を取得
