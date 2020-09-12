@@ -40,7 +40,7 @@ func (m *mysqlDB) GetAllItems(ctx context.Context) ([]*model.Item, error) {
 	return result, nil
 }
 
-func (m *mysqlDB) PutItem(ctx context.Context, t *model.Item) error {
+func (m *mysqlDB) CreateItem(ctx context.Context, t *model.Item) error {
 	stmt, err := m.db.Prepare("INSERT INTO items(id, title) VALUES( UUID_TO_BIN(?, true), ? )")
 	if err != nil {
 		stmt.Close()

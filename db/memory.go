@@ -30,7 +30,7 @@ func (m *memoryDB) GetAllItems(ctx context.Context) ([]*model.Item, error) {
 	return result, nil
 }
 
-func (m *memoryDB) PutItem(ctx context.Context, t *model.Item) error {
+func (m *memoryDB) CreateItem(ctx context.Context, t *model.Item) error {
 	m.lock.Lock()
 	m.db[t.ID] = t
 	m.lock.Unlock()

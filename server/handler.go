@@ -47,7 +47,7 @@ func (h *itemsHandler) create(w http.ResponseWriter, r *http.Request) {
 
 	item.ID = uuid.New().String()
 
-	if err := h.db.PutItem(r.Context(), &item); err != nil {
+	if err := h.db.CreateItem(r.Context(), &item); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

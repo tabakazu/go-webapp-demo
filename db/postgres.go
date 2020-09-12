@@ -41,7 +41,7 @@ func (m *postgresqlDB) GetAllItems(ctx context.Context) ([]*model.Item, error) {
 	return result, nil
 }
 
-func (m *postgresqlDB) PutItem(ctx context.Context, t *model.Item) error {
+func (m *postgresqlDB) CreateItem(ctx context.Context, t *model.Item) error {
 	stmt, err := m.db.Prepare("INSERT INTO items (id, title) VALUES ( $1, $2 )")
 	if err != nil {
 		fmt.Println(err)

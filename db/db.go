@@ -8,5 +8,5 @@ import (
 
 type DB interface {
 	GetAllItems(ctx context.Context) ([]*model.Item, error)
-	PutItem(ctx context.Context, t *model.Item) error
+	CreateItem(ctx context.Context, t *model.Item) error
 }
