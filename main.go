@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/tabakazu/golang-webapi-demo/server"
+	"github.com/tabakazu/golang-webapi-demo/register/app"
 )
 
 func main() {
-	server.Run()
+	app.Run()
 }
