@@ -8,6 +8,7 @@ services:
     working_dir: /go/src/github.com/tabakazu/golang-webapi-demo
     environment:
       MYSQL_URL: 'root:@tcp(mysql:3306)/golang_webapi_demo_dev?charset=utf8&parseTime=True&loc=Local'
+      MYSQL_TEST_URL: 'root:@tcp(mysql:3306)/golang_webapi_demo_test?charset=utf8&parseTime=True&loc=Local'
       GO111MODULE: 'on'
       GOPATH: /go
     volumes:
@@ -35,6 +36,7 @@ services:
       MYSQL_DATABASE: golang_webapi_demo_dev
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./.dockerdev/mysql/initdb:/docker-entrypoint-initdb.d
 
 volumes:
   go_modules:

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/tabakazu/golang-webapi-demo/application"
 	"github.com/tabakazu/golang-webapi-demo/controller"
 	"github.com/tabakazu/golang-webapi-demo/db"
@@ -9,7 +11,8 @@ import (
 )
 
 func main() {
-	d := db.NewConnection()
+	dbURL := os.Getenv("MYSQL_URL")
+	d := db.NewConnection(dbURL)
 	itemRepo := gateway.NewItemRepository(d)
 	itemServices := application.NewItemServices(itemRepo)
 	itemsCtrl := controller.NewItems(itemServices)
