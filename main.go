@@ -1,20 +1,21 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/tabakazu/golang-webapi-demo/application"
+	"github.com/tabakazu/golang-webapi-demo/controller"
+	"github.com/tabakazu/golang-webapi-demo/db"
+	"github.com/tabakazu/golang-webapi-demo/gateway"
+	"github.com/tabakazu/golang-webapi-demo/web"
 )
 
 func main() {
-	e := echo.New()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
+	d := db.NewConnection()
+	itemRepo := gateway.NewItemRepository(d)
+	itemServices := application.NewItemServices(itemRepo)
+	itemsCtrl := controller.NewItems(itemServices)
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!\n")
+	s := web.NewServer(web.RoutingSet{
+		Items: itemsCtrl,
 	})
-
-	e.Logger.Fatal(e.Start(":8080"))
+	s.ListenAndServe()
 }
