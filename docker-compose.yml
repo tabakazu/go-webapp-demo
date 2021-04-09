@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   go_app: &go_app
-    command: bash -c "go run main.go"
+    command: bash -c "realize start"
     build:
-      context: ./.dockerdev/go_app
-    working_dir: /go/src/github.com/tabakazu/golang-webapi-demo
+      context: .
+      target: build
     environment:
       MYSQL_URL: 'root:@tcp(mysql:3306)/golang_webapi_demo_dev?charset=utf8&parseTime=True&loc=Local'
       MYSQL_TEST_URL: 'root:@tcp(mysql:3306)/golang_webapi_demo_test?charset=utf8&parseTime=True&loc=Local'
@@ -23,6 +23,7 @@ services:
 
   db_migration:
     <<: *go_app
+    working_dir: /go/src/github.com/tabakazu/golang-webapi-demo
     command: bash -c "goose status"
     build:
       context: ./.dockerdev/db_migration
