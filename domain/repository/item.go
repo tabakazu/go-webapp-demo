@@ -5,5 +5,9 @@ import (
 )
 
 type Item interface {
+	FindAll() (domain.ItemList, error)
 	Find(domain.ItemID) (domain.Item, error)
+	Create(*domain.Item) error
+	UpdateAttributes(*domain.Item, map[string]interface{}) error
+	SoftDelete(*domain.Item) error
 }
