@@ -10,116 +10,83 @@ import (
 	"github.com/tabakazu/golang-webapi-demo/gateway"
 )
 
-func TestItemRepository_FindAll(t *testing.T) {
-	t.Parallel()
-
-	// CONNECT DB
-	d := db.NewConnection(os.Getenv("MYSQL_TEST_URL"))
-
-	// START TRANSACTION
-	tx := d.Begin()
-
-	// INSERT TEST DATA
-	tx.Create(&domain.Item{ID: domain.ItemID(1), Name: "aaa", Amount: 100})
-	tx.Create(&domain.Item{ID: domain.ItemID(2), Name: "bbb", Amount: 200})
-
-	// TEST
-	itemRepo := gateway.NewItemRepository(tx)
-	items, err := itemRepo.FindAll()
-	assert.NoError(t, err)
-	assert.Equal(t, len(items), 2)
-
-	// ROLLBACK TEST DATA
-	tx.Rollback()
+func newItemRepository() gateway.ItemRepository {
+	conn := db.NewConnection(os.Getenv("MYSQL_TEST_URL"))
+	tx := conn.Begin()
+	return gateway.NewItemRepository(tx)
 }
 
-func TestItemRepository_Find(t *testing.T) {
-	t.Parallel()
+func TestFindAllItems(t *testing.T) {
+	r := newItemRepository()
+	defer r.DB.Rollback()
 
-	// CONNECT DB
-	d := db.NewConnection(os.Getenv("MYSQL_TEST_URL"))
-
-	// START TRANSACTION
-	tx := d.Begin()
-
-	// INSERT TEST DATA
-	tx.Create(&domain.Item{ID: domain.ItemID(1), Name: "aaa", Amount: 100})
-
-	// TEST
-	itemRepo := gateway.NewItemRepository(tx)
-	item, err := itemRepo.Find(domain.ItemID(1))
-	assert.NoError(t, err)
-	assert.Equal(t, item.ID, domain.ItemID(1))
-
-	// ROLLBACK TEST DATA
-	tx.Rollback()
+	t.Run("is expected return all items", func(t *testing.T) {
+		r.Create(&domain.Item{})
+		r.Create(&domain.Item{})
+		items, _ := r.FindAll()
+		assert.Equal(t, len(items), 2)
+	})
 }
 
-func TestItemRepository_Create(t *testing.T) {
-	t.Parallel()
+func TestFindItem(t *testing.T) {
+	r := newItemRepository()
+	defer r.DB.Rollback()
 
-	// CONNECT DB
-	d := db.NewConnection(os.Getenv("MYSQL_TEST_URL"))
-
-	// START TRANSACTION
-	tx := d.Begin()
-
-	// TEST
-	itemRepo := gateway.NewItemRepository(tx)
-	var item = domain.Item{Name: "NewItem", Amount: 1000}
-	err := itemRepo.Create(&item)
-	assert.NoError(t, err)
-
-	// ROLLBACK TEST DATA
-	tx.Rollback()
+	t.Run("is expected return item with specified id", func(t *testing.T) {
+		newItem := domain.Item{}
+		r.Create(&newItem)
+		item, _ := r.Find(newItem.ID)
+		assert.Equal(t, item, newItem)
+	})
+	t.Run("is expected return error with record not found", func(t *testing.T) {
+		id := domain.ItemID(1)
+		_, err := r.Find(id)
+		assert.NotNil(t, err)
+	})
 }
 
-func TestItemRepository_UpdateAttributes(t *testing.T) {
-	t.Parallel()
+func TestCreateItem(t *testing.T) {
+	r := newItemRepository()
+	defer r.DB.Rollback()
 
-	// CONNECT DB
-	d := db.NewConnection(os.Getenv("MYSQL_TEST_URL"))
-
-	// START TRANSACTION
-	tx := d.Begin()
-
-	// INSERT TEST DATA
-	tx.Create(&domain.Item{ID: domain.ItemID(1), Name: "aaa", Amount: 100})
-
-	// TEST
-	itemRepo := gateway.NewItemRepository(tx)
-	item, _ := itemRepo.Find(domain.ItemID(1))
-	attributes := map[string]interface{}{
-		"name":   "NewName",
-		"amount": 0,
-	}
-	err := itemRepo.UpdateAttributes(&item, attributes)
-	assert.NoError(t, err)
-	assert.Equal(t, item.Name, attributes["name"])
-	assert.Equal(t, item.Amount, attributes["amount"])
-
-	// ROLLBACK TEST DATA
-	tx.Rollback()
+	t.Run("is expected increase record count by 1", func(t *testing.T) {
+		newItem := domain.Item{}
+		err := r.Create(&newItem)
+		assert.NoError(t, err)
+		item, _ := r.Find(newItem.ID)
+		assert.NotNil(t, item)
+	})
 }
 
-func TestItemRepository_SoftDelete(t *testing.T) {
-	t.Parallel()
+func TestUpdateItemByAttributes(t *testing.T) {
+	r := newItemRepository()
+	defer r.DB.Rollback()
 
-	// CONNECT DB
-	d := db.NewConnection(os.Getenv("MYSQL_TEST_URL"))
+	t.Run("is expected change oldName to newName", func(t *testing.T) {
+		item := domain.Item{Name: "oldName"}
+		r.Create(&item)
+		item, _ = r.Find(item.ID)
+		assert.Equal(t, item.Name, "oldName")
 
-	// START TRANSACTION
-	tx := d.Begin()
+		err := r.UpdateAttributes(&item, map[string]interface{}{"name": "oldName"})
+		item, _ = r.Find(item.ID)
+		assert.Equal(t, item.Name, "oldName")
+		assert.NoError(t, err)
+	})
+}
 
-	// INSERT TEST DATA
-	tx.Create(&domain.Item{ID: domain.ItemID(1), Name: "aaa", Amount: 100})
+func TestDeleteItem(t *testing.T) {
+	r := newItemRepository()
+	defer r.DB.Rollback()
 
-	// TEST
-	itemRepo := gateway.NewItemRepository(tx)
-	item, _ := itemRepo.Find(domain.ItemID(1))
-	err := itemRepo.SoftDelete(&item)
-	assert.NoError(t, err)
+	t.Run("is expected Delete() to change count by -1", func(t *testing.T) {
+		item := domain.Item{}
+		r.Create(&item)
+		items, _ := r.FindAll()
+		assert.Equal(t, len(items), 1)
 
-	// ROLLBACK TEST DATA
-	tx.Rollback()
+		r.Delete(&item)
+		items, _ = r.FindAll()
+		assert.Equal(t, len(items), 0)
+	})
 }

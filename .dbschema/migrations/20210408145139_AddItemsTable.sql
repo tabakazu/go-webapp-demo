@@ -7,7 +7,6 @@ CREATE TABLE `items` (
   `amount` mediumint unsigned NOT NULL DEFAULT 0 COMMENT '値段',
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
-  `deleted_at` datetime(6),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

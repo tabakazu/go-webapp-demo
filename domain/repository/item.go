@@ -9,5 +9,5 @@ type Item interface {
 	Find(domain.ItemID) (domain.Item, error)
 	Create(*domain.Item) error
 	UpdateAttributes(*domain.Item, map[string]interface{}) error
-	SoftDelete(*domain.Item) error
+	Delete(*domain.Item) error
 }
