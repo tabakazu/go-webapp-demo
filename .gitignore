@@ -18,4 +18,4 @@ Thumbs.db
 # vendor/
 
 # Output of the go reload tool
-tmp/main
+tmp

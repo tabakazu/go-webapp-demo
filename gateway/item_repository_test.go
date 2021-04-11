@@ -11,7 +11,9 @@ import (
 )
 
 func newItemRepository() gateway.ItemRepository {
-	conn := db.NewConnection(os.Getenv("MYSQL_TEST_URL"))
+	d := db.New(os.Getenv("MYSQL_TEST_URL"))
+	d.SilentMode()
+	conn := d.Connect()
 	tx := conn.Begin()
 	return gateway.NewItemRepository(tx)
 }

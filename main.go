@@ -11,9 +11,8 @@ import (
 )
 
 func main() {
-	dbURL := os.Getenv("MYSQL_URL")
-	d := db.NewConnection(dbURL)
-	itemRepo := gateway.NewItemRepository(d)
+	dbConn := db.New(os.Getenv("MYSQL_URL")).Connect()
+	itemRepo := gateway.NewItemRepository(dbConn)
 	itemServices := application.NewItemServices(itemRepo)
 	itemsCtrl := controller.NewItems(itemServices)
 
