@@ -23,8 +23,10 @@ services:
 
   db_migration:
     <<: *go_app
-    working_dir: /go/src/github.com/tabakazu/golang-webapi-demo
     command: bash -c "goose status"
+    volumes:
+      - ./.dbschema:/go/src/github.com/tabakazu/golang-webapi-demo/db
+      - go_modules:/go/pkg/mod
     build:
       context: ./.dockerdev/db_migration
     ports: []
