@@ -16,3 +16,6 @@ Thumbs.db
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Output of the go reload tool
+tmp/main

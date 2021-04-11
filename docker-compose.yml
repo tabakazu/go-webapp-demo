@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   go_app: &go_app
-    command: bash -c "realize start"
+    command: bash -c "air -c .air.toml"
     build:
       context: .
       target: build
