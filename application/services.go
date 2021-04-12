@@ -6,11 +6,13 @@ import (
 )
 
 type ItemServices struct {
+	ListService usecase.ItemList
 	ShowService usecase.ItemShow
 }
 
 func NewItemServices(r repository.Item) ItemServices {
 	return ItemServices{
+		ListService: NewItemListService(r),
 		ShowService: NewItemShowService(r),
 	}
 }

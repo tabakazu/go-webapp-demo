@@ -25,6 +25,7 @@ func NewServer(r RoutingSet) *server {
 		return c.String(http.StatusOK, "Hello, World!\n")
 	})
 
+	e.GET("/items", r.Items.List)
 	e.GET("/items/:id", r.Items.Show)
 
 	return &server{e}
