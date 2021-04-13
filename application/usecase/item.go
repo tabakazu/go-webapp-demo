@@ -15,3 +15,11 @@ type ItemList interface {
 type ItemCreate interface {
 	Execute(domain.Item) (domain.Item, error)
 }
+
+type ItemUpdate interface {
+	Execute(domain.ItemID, domain.Item) (domain.Item, error)
+}
+
+type ItemDelete interface {
+	Execute(domain.ItemID) (domain.Item, error)
+}
