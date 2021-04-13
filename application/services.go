@@ -6,13 +6,15 @@ import (
 )
 
 type ItemServices struct {
-	ListService usecase.ItemList
-	ShowService usecase.ItemShow
+	ListService   usecase.ItemList
+	ShowService   usecase.ItemShow
+	CreateService usecase.ItemCreate
 }
 
 func NewItemServices(r repository.Item) ItemServices {
 	return ItemServices{
-		ListService: NewItemListService(r),
-		ShowService: NewItemShowService(r),
+		ListService:   NewItemListService(r),
+		ShowService:   NewItemShowService(r),
+		CreateService: NewItemCreateService(r),
 	}
 }

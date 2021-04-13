@@ -11,3 +11,7 @@ type ItemShow interface {
 type ItemList interface {
 	Execute() ([]domain.Item, error)
 }
+
+type ItemCreate interface {
+	Execute(domain.Item) (domain.Item, error)
+}

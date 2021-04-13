@@ -26,6 +26,7 @@ func NewServer(r RoutingSet) *server {
 	})
 
 	e.GET("/items", r.Items.List)
+	e.POST("/items", r.Items.Create)
 	e.GET("/items/:id", r.Items.Show)
 
 	return &server{e}
