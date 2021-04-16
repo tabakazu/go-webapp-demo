@@ -6,8 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tabakazu/golang-webapi-demo/db"
-	"github.com/tabakazu/golang-webapi-demo/domain"
-	"github.com/tabakazu/golang-webapi-demo/gateway"
+	"github.com/tabakazu/golang-webapi-demo/domain/entity"
+	"github.com/tabakazu/golang-webapi-demo/domain/value"
+	"github.com/tabakazu/golang-webapi-demo/db/gateway"
 )
 
 func newItemRepository() gateway.ItemRepository {
@@ -23,8 +24,8 @@ func TestFindAllItems(t *testing.T) {
 	defer r.DB.Rollback()
 
 	t.Run("is expected return all items", func(t *testing.T) {
-		r.Create(&domain.Item{})
-		r.Create(&domain.Item{})
+		r.Create(&entity.Item{})
+		r.Create(&entity.Item{})
 		items, _ := r.FindAll()
 		assert.Equal(t, len(items), 2)
 	})
@@ -35,13 +36,13 @@ func TestFindItem(t *testing.T) {
 	defer r.DB.Rollback()
 
 	t.Run("is expected return item with specified id", func(t *testing.T) {
-		newItem := domain.Item{}
+		newItem := entity.Item{}
 		r.Create(&newItem)
 		item, _ := r.Find(newItem.ID)
 		assert.Equal(t, item, newItem)
 	})
 	t.Run("is expected return error with record not found", func(t *testing.T) {
-		id := domain.ItemID(1)
+		id := value.ItemID(1)
 		_, err := r.Find(id)
 		assert.NotNil(t, err)
 	})
@@ -52,7 +53,7 @@ func TestCreateItem(t *testing.T) {
 	defer r.DB.Rollback()
 
 	t.Run("is expected increase record count by 1", func(t *testing.T) {
-		newItem := domain.Item{}
+		newItem := entity.Item{}
 		err := r.Create(&newItem)
 		assert.NoError(t, err)
 		item, _ := r.Find(newItem.ID)
@@ -65,7 +66,7 @@ func TestUpdateItemByAttributes(t *testing.T) {
 	defer r.DB.Rollback()
 
 	t.Run("is expected change oldName to newName", func(t *testing.T) {
-		item := domain.Item{Name: "oldName"}
+		item := entity.Item{Name: "oldName"}
 		r.Create(&item)
 		item, _ = r.Find(item.ID)
 		assert.Equal(t, item.Name, "oldName")
@@ -82,7 +83,7 @@ func TestDeleteItem(t *testing.T) {
 	defer r.DB.Rollback()
 
 	t.Run("is expected Delete() to change count by -1", func(t *testing.T) {
-		item := domain.Item{}
+		item := entity.Item{}
 		r.Create(&item)
 		items, _ := r.FindAll()
 		assert.Equal(t, len(items), 1)
