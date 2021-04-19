@@ -3,10 +3,11 @@ package web
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/tabakazu/golang-webapi-demo/controller"
 )
 
 type server struct {
-	Router *echo.Echo
+	*echo.Echo
 }
 
 func NewServer() *server {
@@ -14,9 +15,17 @@ func NewServer() *server {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	return &server{Router: e}
+	return &server{e}
+}
+
+func (s server) SetupItemRoutes(ctrl controller.Items) {
+	s.GET("/items", ctrl.List)
+	s.POST("/items", ctrl.Create)
+	s.GET("/items/:id", ctrl.Show)
+	s.PUT("/items/:id", ctrl.Update)
+	s.DELETE("/items/:id", ctrl.Delete)
 }
 
 func (s server) ListenAndServe() {
-	s.Router.Logger.Fatal(s.Router.Start(":8080"))
+	s.Logger.Fatal(s.Start(":8080"))
 }

@@ -1,4 +1,4 @@
-package datastore
+package gateway
 
 import (
 	"github.com/tabakazu/golang-webapi-demo/domain/collection"

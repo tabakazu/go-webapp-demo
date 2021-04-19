@@ -1,4 +1,4 @@
-package datastore_test
+package gateway_test
 
 import (
 	"os"
@@ -7,16 +7,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/tabakazu/golang-webapi-demo/domain/entity"
 	"github.com/tabakazu/golang-webapi-demo/domain/value"
-	"github.com/tabakazu/golang-webapi-demo/gateway/datastore"
+	"github.com/tabakazu/golang-webapi-demo/gateway"
 	"github.com/tabakazu/golang-webapi-demo/infrastructure/db"
 )
 
-func newItemRepository() datastore.ItemRepository {
+func newItemRepository() gateway.ItemRepository {
 	d := db.New(os.Getenv("MYSQL_TEST_URL"))
 	d.SilentMode()
 	conn := d.Connect()
 	tx := conn.Begin()
-	return datastore.NewItemRepository(tx)
+	return gateway.NewItemRepository(tx)
 }
 
 func TestFindAllItems(t *testing.T) {
