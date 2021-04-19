@@ -2,6 +2,7 @@ package db
 
 import (
 	"log"
+	"os"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -11,6 +12,11 @@ import (
 type connection struct {
 	dbURL  string
 	config *gorm.Config
+}
+
+func NewConnection() *gorm.DB {
+	c := New(os.Getenv("MYSQL_URL"))
+	return c.Connect()
 }
 
 func New(dbURL string) *connection {
