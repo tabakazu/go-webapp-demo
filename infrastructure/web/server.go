@@ -26,6 +26,11 @@ func (s server) SetupItemRoutes(ctrl controller.Items) {
 	s.DELETE("/items/:id", ctrl.Delete)
 }
 
+func (s server) SetupUserRoutes(ctrl controller.User) {
+	s.POST("/register", ctrl.Register)
+	s.POST("/login", ctrl.Login)
+}
+
 func (s server) ListenAndServe() {
 	s.Logger.Fatal(s.Start(":8080"))
 }

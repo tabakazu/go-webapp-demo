@@ -13,3 +13,8 @@ type ItemRepository interface {
 	UpdateAttributes(*entity.Item, map[string]interface{}) error
 	Delete(*entity.Item) error
 }
+
+type UserRepository interface {
+	FindByEmail(value.Email) (entity.User, error)
+	Create(*entity.User) error
+}

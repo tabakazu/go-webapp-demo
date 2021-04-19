@@ -22,3 +22,15 @@ func NewItemsUseCases(r domain.ItemRepository) ItemsUseCases {
 		Delete:  NewItemDelete(r),
 	}
 }
+
+type UserUseCases struct {
+	Register     usecase.UserRegister
+	Authenticate usecase.UserAuthenticate
+}
+
+func NewUserUseCases(r domain.UserRepository) UserUseCases {
+	return UserUseCases{
+		Register:     NewUserRegister(r),
+		Authenticate: NewUserAuthenticate(r),
+	}
+}
