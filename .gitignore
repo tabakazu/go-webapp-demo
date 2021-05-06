@@ -15,7 +15,8 @@ Thumbs.db
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
+frontend/node_modules
 
 # Output of the go reload tool
 tmp
