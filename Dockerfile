@@ -9,7 +9,9 @@ COPY . .
 
 RUN apt-get update -qq && apt-get install -yq default-mysql-client
 RUN go build -o /tmp/golang-webapi-demo/app
-RUN GO111MODULE=off go get github.com/cosmtrek/air
+RUN GO111MODULE=off go get \
+  github.com/cosmtrek/air \
+  github.com/google/wire/cmd/wire
 
 
 FROM debian
