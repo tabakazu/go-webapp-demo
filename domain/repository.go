@@ -10,7 +10,6 @@ type ItemRepository interface {
 	FindAll() (collection.Items, error)
 	Find(value.ItemID) (entity.Item, error)
 	Create(*entity.Item) error
-	UpdateAttributes(*entity.Item, map[string]interface{}) error
 	Delete(*entity.Item) error
 }
 

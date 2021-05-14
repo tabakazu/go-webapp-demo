@@ -1,4 +1,4 @@
-package usecase
+package app
 
 import (
 	"github.com/tabakazu/golang-webapi-demo/domain/collection"
@@ -6,22 +6,18 @@ import (
 	"github.com/tabakazu/golang-webapi-demo/domain/value"
 )
 
-type ItemsGet interface {
+type GetItemListUseCase interface {
 	Execute() (collection.Items, error)
 }
 
-type ItemGet interface {
+type GetItemUseCase interface {
 	Execute(value.ItemID) (entity.Item, error)
 }
 
-type ItemCreate interface {
+type CreateItemUseCase interface {
 	Execute(entity.Item) (entity.Item, error)
 }
 
-type ItemUpdate interface {
-	Execute(value.ItemID, entity.Item) (entity.Item, error)
-}
-
-type ItemDelete interface {
+type DeleteItemUseCase interface {
 	Execute(value.ItemID) (entity.Item, error)
 }

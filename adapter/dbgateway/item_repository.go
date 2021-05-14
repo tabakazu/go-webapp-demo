@@ -1,4 +1,4 @@
-package gateway
+package dbgateway
 
 import (
 	"github.com/tabakazu/golang-webapi-demo/domain/collection"
@@ -7,15 +7,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type ItemRepository struct {
+type itemRepository struct {
 	DB *gorm.DB
 }
 
-func NewItemRepository(d *gorm.DB) ItemRepository {
-	return ItemRepository{d}
+func NewItemRepository(d *gorm.DB) *itemRepository {
+	return &itemRepository{d}
 }
 
-func (r ItemRepository) FindAll() (collection.Items, error) {
+func (r *itemRepository) FindAll() (collection.Items, error) {
 	var items collection.Items
 	if err := r.DB.Find(&items).Error; err != nil {
 		return items, err
@@ -23,7 +23,7 @@ func (r ItemRepository) FindAll() (collection.Items, error) {
 	return items, nil
 }
 
-func (r ItemRepository) Find(itemId value.ItemID) (entity.Item, error) {
+func (r *itemRepository) Find(itemId value.ItemID) (entity.Item, error) {
 	var item entity.Item
 	if err := r.DB.First(&item, "id = ?", itemId).Error; err != nil {
 		return item, err
@@ -31,21 +31,14 @@ func (r ItemRepository) Find(itemId value.ItemID) (entity.Item, error) {
 	return item, nil
 }
 
-func (r ItemRepository) Create(item *entity.Item) error {
+func (r *itemRepository) Create(item *entity.Item) error {
 	if err := r.DB.Create(item).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r ItemRepository) UpdateAttributes(item *entity.Item, attributes map[string]interface{}) error {
-	if err := r.DB.Model(item).Updates(attributes).Error; err != nil {
-		return err
-	}
-	return nil
-}
-
-func (r ItemRepository) Delete(item *entity.Item) error {
+func (r *itemRepository) Delete(item *entity.Item) error {
 	if err := r.DB.Delete(item).Error; err != nil {
 		return err
 	}

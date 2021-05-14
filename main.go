@@ -1,24 +1,29 @@
 package main
 
 import (
-	"github.com/tabakazu/golang-webapi-demo/controller"
-	"github.com/tabakazu/golang-webapi-demo/gateway"
-	"github.com/tabakazu/golang-webapi-demo/infrastructure/db"
-	"github.com/tabakazu/golang-webapi-demo/infrastructure/web"
-	"github.com/tabakazu/golang-webapi-demo/usecase/interactor"
+	"github.com/tabakazu/golang-webapi-demo/adapter/dbgateway"
+	"github.com/tabakazu/golang-webapi-demo/adapter/rest"
+	"github.com/tabakazu/golang-webapi-demo/app/service"
+	"github.com/tabakazu/golang-webapi-demo/infra/db"
+	"github.com/tabakazu/golang-webapi-demo/infra/web"
 )
 
 func main() {
-	conn := db.NewConnection()
-	itemRepo := gateway.NewItemRepository(conn)
-	itemUseCases := interactor.NewItemsUseCases(itemRepo)
-	itemsCtrl := controller.NewItems(itemUseCases)
-	userRepo := gateway.NewUserRepository(conn)
-	userUseCases := interactor.NewUserUseCases(userRepo)
-	userCtrl := controller.NewUser(userUseCases)
-
-	s := web.NewServer()
-	s.SetupItemRoutes(itemsCtrl)
-	s.SetupUserRoutes(userCtrl)
+	s := InitializeWebServer()
 	s.ListenAndServe()
+}
+
+func InitializeWebServer() web.Server {
+	conn := db.NewConnection()
+	srv := web.NewServer()
+
+	healthCheckCtrl := rest.NewHealthCheckController()
+	rest.SetupHealthCheckRoute(srv.Router, healthCheckCtrl)
+
+	itemRepo := dbgateway.NewItemRepository(conn)
+	itemUseCase := service.NewItemUseCase(itemRepo)
+	itemCtrl := rest.NewItemController(itemUseCase)
+	rest.SetupItemRoute(srv.Router, itemCtrl)
+
+	return srv
 }
