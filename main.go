@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/tabakazu/golang-webapi-demo/adapter/dbgateway"
 	"github.com/tabakazu/golang-webapi-demo/adapter/rest"
 	"github.com/tabakazu/golang-webapi-demo/app/service"
@@ -8,12 +10,27 @@ import (
 	"github.com/tabakazu/golang-webapi-demo/infra/web"
 )
 
+type (
+	webServer interface {
+		ListenAndServe()
+	}
+	sqlDB interface {
+		Close() error
+	}
+)
+
 func main() {
-	s := InitializeWebServer()
+	s, c := InitializeWebServer()
 	s.ListenAndServe()
+
+	defer func() {
+		if err := c.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 }
 
-func InitializeWebServer() web.Server {
+func InitializeWebServer() (webServer, sqlDB) {
 	conn := db.NewConnection()
 	srv := web.NewServer()
 
@@ -25,5 +42,9 @@ func InitializeWebServer() web.Server {
 	itemCtrl := rest.NewItemController(itemUseCase)
 	rest.SetupItemRoute(srv.Router, itemCtrl)
 
-	return srv
+	db, err := conn.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return srv, db
 }
