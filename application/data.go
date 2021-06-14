@@ -28,3 +28,13 @@ func NewRegisterUserAccountResult(e *domain.UserAccount) *RegisterUserAccountRes
 		Email:      e.Email,
 	}
 }
+
+type LoginUserAccountParam struct {
+	UsernameOrEmail string `json:"username_or_email"`
+	Password        string `json:"password"`
+}
+
+type LoginUserAccountResult struct {
+	Username string `json:"username"`
+	Token    string `json:"token"`
+}
