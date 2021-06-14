@@ -17,7 +17,7 @@ func NewUserAccountRepository(db *gorm.DB) domain.UserAccountRepository {
 
 func (r *userAccountRepository) userAccountScope() *gorm.DB {
 	return r.db.Model(&domain.User{}).
-		Select("users.username, users.family_name, users.given_name, a.email, a.password_digest").
+		Select("users.id, users.username, users.family_name, users.given_name, a.email, a.password_digest").
 		Joins("JOIN accounts a ON a.user_id = users.id")
 }
 

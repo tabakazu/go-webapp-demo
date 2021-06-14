@@ -35,6 +35,14 @@ type LoginUserAccountParam struct {
 }
 
 type LoginUserAccountResult struct {
+	ID       uint   `json:"id"`
 	Username string `json:"username"`
 	Token    string `json:"token"`
+}
+
+func NewLoginUserAccountResult(e *domain.UserAccount) *LoginUserAccountResult {
+	return &LoginUserAccountResult{
+		ID:       e.ID,
+		Username: e.Username,
+	}
 }
