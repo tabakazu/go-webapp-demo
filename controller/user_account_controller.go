@@ -2,12 +2,9 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"net/http"
-	"os"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/tabakazu/go-webapp/application"
 )
@@ -38,6 +35,10 @@ func (ctrl *userAccountController) RegisterHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
+	if err := application.ValidateRegisterUserAccountParam(&param); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
 	ctx := context.Background()
 	ctx, _ = context.WithTimeout(ctx, 1*time.Second)
 
@@ -54,6 +55,10 @@ func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
+	if err := application.ValidateLoginUserAccountParam(&param); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
 	ctx := context.Background()
 	ctx, _ = context.WithTimeout(ctx, 1*time.Second)
 
@@ -61,18 +66,6 @@ func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
 	if err != nil {
 		return c.String(http.StatusUnauthorized, err.Error())
 	}
-
-	now := time.Now()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"iat":     now.Unix(),
-		"exp":     now.Add(time.Hour * 24).Unix(),
-		"user_id": fmt.Sprintf("%d", r.ID),
-	})
-	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
-	if err != nil {
-		return c.String(http.StatusUnauthorized, err.Error())
-	}
-	r.Token = tokenString
 
 	return c.JSON(http.StatusOK, r)
 }

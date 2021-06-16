@@ -2,7 +2,11 @@ package application
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/tabakazu/go-webapp/domain"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -27,6 +31,17 @@ func (s *userAccountLoginService) Execute(ctx context.Context, param *LoginUserA
 		return nil, err
 	}
 
-	result := NewLoginUserAccountResult(userAccount)
+	now := time.Now()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iat":     now.Unix(),
+		"exp":     now.Add(time.Hour * 24).Unix(),
+		"user_id": fmt.Sprintf("%d", userAccount.ID),
+	})
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	if err != nil {
+		return nil, err
+	}
+
+	result := NewLoginUserAccountResult(userAccount, tokenString)
 	return result, nil
 }
