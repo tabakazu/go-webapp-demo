@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -18,6 +20,7 @@ func NewServer(
 
 	e.POST("/user_account", userAccountCtrl.RegisterHandler)
 	e.POST("/user_account/login", userAccountCtrl.LoginHandler)
+	e.GET("/user_account", userAccountCtrl.ShowHandler, middleware.JWT([]byte(os.Getenv("SECRET_KEY"))))
 
 	return &Server{router: e}
 }

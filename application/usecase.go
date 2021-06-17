@@ -11,3 +11,7 @@ type RegisterUserAccount interface {
 type LoginUserAccount interface {
 	Execute(context.Context, *LoginUserAccountParam) (*LoginUserAccountResult, error)
 }
+
+type ShowUserAccount interface {
+	Execute(context.Context, int) (*ShowUserAccountResult, error)
+}

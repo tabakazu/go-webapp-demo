@@ -21,6 +21,14 @@ func (r *userAccountRepository) userAccountScope() *gorm.DB {
 		Joins("JOIN accounts a ON a.user_id = users.id")
 }
 
+func (r *userAccountRepository) FindByID(ctx context.Context, userID int) (*domain.UserAccount, error) {
+	var e domain.UserAccount
+	if err := r.userAccountScope().Where("users.id = ?", userID).First(&e).Error; err != nil {
+		return nil, err
+	}
+	return &e, nil
+}
+
 func (r *userAccountRepository) FindByUsername(ctx context.Context, username string) (*domain.UserAccount, error) {
 	var e domain.UserAccount
 	if err := r.userAccountScope().Where("username = ?", username).First(&e).Error; err != nil {

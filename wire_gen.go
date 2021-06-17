@@ -19,7 +19,8 @@ func InitializeServer() *controller.Server {
 	userAccountRepository := gateway.NewUserAccountRepository(db)
 	registerUserAccount := application.NewUserAccountRegisterService(userAccountRepository)
 	loginUserAccount := application.NewUserAccountLoginService(userAccountRepository)
-	userAccountController := controller.NewUserAccountController(registerUserAccount, loginUserAccount)
+	showUserAccount := application.NewUserAccountShowService(userAccountRepository)
+	userAccountController := controller.NewUserAccountController(registerUserAccount, loginUserAccount, showUserAccount)
 	server := controller.NewServer(userAccountController)
 	return server
 }

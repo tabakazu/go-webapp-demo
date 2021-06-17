@@ -31,3 +31,19 @@ func NewLoginUserAccountResult(e *domain.UserAccount, token string) *LoginUserAc
 		Token:    token,
 	}
 }
+
+type ShowUserAccountResult struct {
+	Username   string `json:"username"`
+	FamilyName string `json:"family_name"`
+	GivenName  string `json:"given_name"`
+	Email      string `json:"email"`
+}
+
+func NewShowUserAccountResult(e *domain.UserAccount) *ShowUserAccountResult {
+	return &ShowUserAccountResult{
+		Username:   e.Username,
+		FamilyName: e.FamilyName,
+		GivenName:  e.GivenName,
+		Email:      e.Email,
+	}
+}
