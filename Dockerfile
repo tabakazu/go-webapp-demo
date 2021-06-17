@@ -12,7 +12,8 @@ RUN go build -o /tmp/go-webapp/app
 RUN GO111MODULE=on go get \
   github.com/google/wire/cmd/wire
 RUN GO111MODULE=off go get \
-  github.com/cosmtrek/air
+  github.com/cosmtrek/air \
+  github.com/swaggo/swag/cmd/swag
 
 
 FROM debian

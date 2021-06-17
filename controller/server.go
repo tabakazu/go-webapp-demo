@@ -11,6 +11,10 @@ type Server struct {
 	router *echo.Echo
 }
 
+// NewServer returns initialized Server
+// @title WebApp API Doc
+// @version 1.0
+// @host localhost:8080
 func NewServer(
 	userAccountCtrl UserAccountController,
 ) *Server {

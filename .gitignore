@@ -19,3 +19,7 @@ Thumbs.db
 
 # Output of the go reload tool
 tmp
+
+# Output of the api doc generate tool
+docs.go
+swagger.json

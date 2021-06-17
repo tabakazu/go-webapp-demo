@@ -35,6 +35,15 @@ func NewUserAccountController(
 	}
 }
 
+// RegisterHandler godoc
+// @Summary Register a user
+// @Description create user
+// @Accept json
+// @Produce json
+// @Param user body application.RegisterUserAccountParam true "RegisterUserAccountParam"
+// @Success 200 {object} application.RegisterUserAccountResult
+// @Failure 400
+// @Router /user_account [post]
 func (ctrl *userAccountController) RegisterHandler(c echo.Context) error {
 	var param application.RegisterUserAccountParam
 	if err := c.Bind(&param); err != nil {
@@ -55,6 +64,15 @@ func (ctrl *userAccountController) RegisterHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, r)
 }
 
+// LoginHandler godoc
+// @Summary Login with user
+// @Description login with user
+// @Accept json
+// @Produce json
+// @Param user body application.LoginUserAccountParam true "LoginUserAccountParam"
+// @Success 200 {object} application.LoginUserAccountResult
+// @Failure 400,401
+// @Router /user_account/login [post]
 func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
 	var param application.LoginUserAccountParam
 	if err := c.Bind(&param); err != nil {
@@ -76,6 +94,14 @@ func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, r)
 }
 
+// ShowHandler godoc
+// @Summary Show a logged in user
+// @Description Show a logged in user
+// @Accept json
+// @Produce json
+// @Success 200 {object} application.ShowUserAccountResult
+// @Failure 401
+// @Router /user_account [get]
 func (ctrl *userAccountController) ShowHandler(c echo.Context) error {
 	ctx := context.Background()
 	ctx, _ = context.WithTimeout(ctx, 1*time.Second)

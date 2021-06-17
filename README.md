@@ -24,4 +24,7 @@ $ docker-compose run --rm go_app go test -v -race -cover  ./... -parallel 4
 $ docker build -t go-webapp .
 $ docker run -p 8080:8080 -e MYSQL_URL='root:@tcp(host.docker.internal:3306)/golang_webapi_demo_dev' --name go-webapp go-webapp
 $ docker rm go-webapp
+
+# generate api doc
+$ docker-compose run --rm go_app swag init -o .docs/api -g controller/server.go
 ```
