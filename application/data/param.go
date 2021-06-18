@@ -1,4 +1,4 @@
-package application
+package data
 
 import (
 	"github.com/go-playground/validator/v10"

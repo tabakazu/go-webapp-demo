@@ -1,10 +1,13 @@
-package application
+package service
 
 import (
 	"context"
 	"errors"
 
+	"github.com/tabakazu/go-webapp/application"
+	"github.com/tabakazu/go-webapp/application/data"
 	"github.com/tabakazu/go-webapp/domain"
+	"github.com/tabakazu/go-webapp/domain/entity"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,13 +15,13 @@ type userAccountRegisterService struct {
 	repo domain.UserAccountRepository
 }
 
-func NewUserAccountRegisterService(repo domain.UserAccountRepository) RegisterUserAccount {
+func NewUserAccountRegisterService(repo domain.UserAccountRepository) application.RegisterUserAccount {
 	return &userAccountRegisterService{
 		repo: repo,
 	}
 }
 
-func (s *userAccountRegisterService) Execute(ctx context.Context, param *RegisterUserAccountParam) (*RegisterUserAccountResult, error) {
+func (s *userAccountRegisterService) Execute(ctx context.Context, param *data.RegisterUserAccountParam) (*data.RegisterUserAccountResult, error) {
 	if param.Password != param.PasswordConfirmation {
 		return nil, errors.New("password doesn't match password_confirmation")
 	}
@@ -28,7 +31,7 @@ func (s *userAccountRegisterService) Execute(ctx context.Context, param *Registe
 		return nil, err
 	}
 
-	userAccount := domain.UserAccount{
+	userAccount := entity.UserAccount{
 		Username:       param.Username,
 		FamilyName:     param.FamilyName,
 		GivenName:      param.GivenName,
@@ -39,6 +42,6 @@ func (s *userAccountRegisterService) Execute(ctx context.Context, param *Registe
 		return nil, err
 	}
 
-	result := NewRegisterUserAccountResult(&userAccount)
+	result := data.NewRegisterUserAccountResult(&userAccount)
 	return result, nil
 }

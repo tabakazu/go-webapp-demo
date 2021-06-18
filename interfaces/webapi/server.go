@@ -1,10 +1,11 @@
-package controller
+package webapi
 
 import (
 	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/tabakazu/go-webapp/interfaces/webapi/controller"
 )
 
 type Server struct {
@@ -16,7 +17,7 @@ type Server struct {
 // @version 1.0
 // @host localhost:8080
 func NewServer(
-	userAccountCtrl UserAccountController,
+	userAccountCtrl controller.UserAccountController,
 ) *Server {
 	e := echo.New()
 	e.Use(middleware.Logger())

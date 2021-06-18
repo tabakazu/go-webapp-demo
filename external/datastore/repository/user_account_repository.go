@@ -1,9 +1,10 @@
-package gateway
+package repository
 
 import (
 	"context"
 
 	"github.com/tabakazu/go-webapp/domain"
+	"github.com/tabakazu/go-webapp/domain/entity"
 	"gorm.io/gorm"
 )
 
@@ -16,36 +17,36 @@ func NewUserAccountRepository(db *gorm.DB) domain.UserAccountRepository {
 }
 
 func (r *userAccountRepository) userAccountScope() *gorm.DB {
-	return r.db.Model(&domain.User{}).
+	return r.db.Model(&entity.User{}).
 		Select("users.id, users.username, users.family_name, users.given_name, a.email, a.password_digest").
 		Joins("JOIN accounts a ON a.user_id = users.id")
 }
 
-func (r *userAccountRepository) FindByID(ctx context.Context, userID int) (*domain.UserAccount, error) {
-	var e domain.UserAccount
+func (r *userAccountRepository) FindByID(ctx context.Context, userID int) (*entity.UserAccount, error) {
+	var e entity.UserAccount
 	if err := r.userAccountScope().Where("users.id = ?", userID).First(&e).Error; err != nil {
 		return nil, err
 	}
 	return &e, nil
 }
 
-func (r *userAccountRepository) FindByUsername(ctx context.Context, username string) (*domain.UserAccount, error) {
-	var e domain.UserAccount
+func (r *userAccountRepository) FindByUsername(ctx context.Context, username string) (*entity.UserAccount, error) {
+	var e entity.UserAccount
 	if err := r.userAccountScope().Where("username = ?", username).First(&e).Error; err != nil {
 		return nil, err
 	}
 	return &e, nil
 }
 
-func (r *userAccountRepository) FindByEmail(ctx context.Context, email string) (*domain.UserAccount, error) {
-	var e domain.UserAccount
+func (r *userAccountRepository) FindByEmail(ctx context.Context, email string) (*entity.UserAccount, error) {
+	var e entity.UserAccount
 	if err := r.userAccountScope().Where("email = ?", email).First(&e).Error; err != nil {
 		return nil, err
 	}
 	return &e, nil
 }
 
-func (r *userAccountRepository) Create(ctx context.Context, e *domain.UserAccount) error {
+func (r *userAccountRepository) Create(ctx context.Context, e *entity.UserAccount) error {
 	tx := r.db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -57,7 +58,7 @@ func (r *userAccountRepository) Create(ctx context.Context, e *domain.UserAccoun
 		return err
 	}
 
-	u := domain.User{
+	u := entity.User{
 		Username:   e.Username,
 		FamilyName: e.FamilyName,
 		GivenName:  e.GivenName,
@@ -68,7 +69,7 @@ func (r *userAccountRepository) Create(ctx context.Context, e *domain.UserAccoun
 	}
 	e.ID = u.ID
 
-	a := domain.Account{
+	a := entity.Account{
 		UserID:         e.ID,
 		Email:          e.Email,
 		PasswordDigest: e.PasswordDigest,

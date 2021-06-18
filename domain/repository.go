@@ -1,10 +1,14 @@
 package domain
 
-import "context"
+import (
+	"context"
+
+	"github.com/tabakazu/go-webapp/domain/entity"
+)
 
 type UserAccountRepository interface {
-	FindByID(context.Context, int) (*UserAccount, error)
-	FindByUsername(context.Context, string) (*UserAccount, error)
-	FindByEmail(context.Context, string) (*UserAccount, error)
-	Create(context.Context, *UserAccount) error
+	FindByID(context.Context, int) (*entity.UserAccount, error)
+	FindByUsername(context.Context, string) (*entity.UserAccount, error)
+	FindByEmail(context.Context, string) (*entity.UserAccount, error)
+	Create(context.Context, *entity.UserAccount) error
 }

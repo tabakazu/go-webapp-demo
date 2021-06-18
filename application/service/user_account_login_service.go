@@ -1,4 +1,4 @@
-package application
+package service
 
 import (
 	"context"
@@ -7,6 +7,8 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/tabakazu/go-webapp/application"
+	"github.com/tabakazu/go-webapp/application/data"
 	"github.com/tabakazu/go-webapp/domain"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,13 +17,13 @@ type userAccountLoginService struct {
 	repo domain.UserAccountRepository
 }
 
-func NewUserAccountLoginService(repo domain.UserAccountRepository) LoginUserAccount {
+func NewUserAccountLoginService(repo domain.UserAccountRepository) application.LoginUserAccount {
 	return &userAccountLoginService{
 		repo: repo,
 	}
 }
 
-func (s *userAccountLoginService) Execute(ctx context.Context, param *LoginUserAccountParam) (*LoginUserAccountResult, error) {
+func (s *userAccountLoginService) Execute(ctx context.Context, param *data.LoginUserAccountParam) (*data.LoginUserAccountResult, error) {
 	userAccount, err := s.repo.FindByUsername(ctx, param.UsernameOrEmail)
 	if err != nil {
 		return nil, err
@@ -42,6 +44,6 @@ func (s *userAccountLoginService) Execute(ctx context.Context, param *LoginUserA
 		return nil, err
 	}
 
-	result := NewLoginUserAccountResult(userAccount, tokenString)
+	result := data.NewLoginUserAccountResult(userAccount, tokenString)
 	return result, nil
 }

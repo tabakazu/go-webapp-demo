@@ -1,7 +1,7 @@
-package application
+package data
 
 import (
-	"github.com/tabakazu/go-webapp/domain"
+	"github.com/tabakazu/go-webapp/domain/entity"
 )
 
 type RegisterUserAccountResult struct {
@@ -11,7 +11,7 @@ type RegisterUserAccountResult struct {
 	Email      string `json:"email"`
 }
 
-func NewRegisterUserAccountResult(e *domain.UserAccount) *RegisterUserAccountResult {
+func NewRegisterUserAccountResult(e *entity.UserAccount) *RegisterUserAccountResult {
 	return &RegisterUserAccountResult{
 		Username:   e.Username,
 		FamilyName: e.FamilyName,
@@ -25,7 +25,7 @@ type LoginUserAccountResult struct {
 	Token    string `json:"token"`
 }
 
-func NewLoginUserAccountResult(e *domain.UserAccount, token string) *LoginUserAccountResult {
+func NewLoginUserAccountResult(e *entity.UserAccount, token string) *LoginUserAccountResult {
 	return &LoginUserAccountResult{
 		Username: e.Username,
 		Token:    token,
@@ -39,7 +39,7 @@ type ShowUserAccountResult struct {
 	Email      string `json:"email"`
 }
 
-func NewShowUserAccountResult(e *domain.UserAccount) *ShowUserAccountResult {
+func NewShowUserAccountResult(e *entity.UserAccount) *ShowUserAccountResult {
 	return &ShowUserAccountResult{
 		Username:   e.Username,
 		FamilyName: e.FamilyName,

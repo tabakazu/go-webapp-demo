@@ -1,5 +1,5 @@
 definitions:
-  application.LoginUserAccountParam:
+  data.LoginUserAccountParam:
     properties:
       password:
         type: string
@@ -9,14 +9,14 @@ definitions:
     - password
     - username_or_email
     type: object
-  application.LoginUserAccountResult:
+  data.LoginUserAccountResult:
     properties:
       token:
         type: string
       username:
         type: string
     type: object
-  application.RegisterUserAccountParam:
+  data.RegisterUserAccountParam:
     properties:
       email:
         type: string
@@ -31,7 +31,7 @@ definitions:
       username:
         type: string
     type: object
-  application.RegisterUserAccountResult:
+  data.RegisterUserAccountResult:
     properties:
       email:
         type: string
@@ -42,7 +42,7 @@ definitions:
       username:
         type: string
     type: object
-  application.ShowUserAccountResult:
+  data.ShowUserAccountResult:
     properties:
       email:
         type: string
@@ -70,7 +70,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/application.ShowUserAccountResult'
+            $ref: '#/definitions/data.ShowUserAccountResult'
         "401":
           description: ""
       summary: Show a logged in user
@@ -84,14 +84,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/application.RegisterUserAccountParam'
+          $ref: '#/definitions/data.RegisterUserAccountParam'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/application.RegisterUserAccountResult'
+            $ref: '#/definitions/data.RegisterUserAccountResult'
         "400":
           description: ""
       summary: Register a user
@@ -106,14 +106,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/application.LoginUserAccountParam'
+          $ref: '#/definitions/data.LoginUserAccountParam'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/application.LoginUserAccountResult'
+            $ref: '#/definitions/data.LoginUserAccountResult'
         "400":
           description: ""
         "401":

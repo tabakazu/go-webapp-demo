@@ -1,4 +1,4 @@
-package gateway
+package datastore
 
 import (
 	"os"
@@ -17,7 +17,7 @@ func NewDBConfig() *dbConfig {
 	}
 }
 
-func NewDB(cfg *dbConfig) *gorm.DB {
+func NewConnection(cfg *dbConfig) *gorm.DB {
 	if cfg == nil {
 		cfg = &dbConfig{}
 	}

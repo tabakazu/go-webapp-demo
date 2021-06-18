@@ -9,6 +9,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"github.com/tabakazu/go-webapp/application"
+	"github.com/tabakazu/go-webapp/application/data"
 )
 
 type UserAccountController interface {
@@ -40,17 +41,17 @@ func NewUserAccountController(
 // @Description create user
 // @Accept json
 // @Produce json
-// @Param user body application.RegisterUserAccountParam true "RegisterUserAccountParam"
-// @Success 200 {object} application.RegisterUserAccountResult
+// @Param user body data.RegisterUserAccountParam true "RegisterUserAccountParam"
+// @Success 200 {object} data.RegisterUserAccountResult
 // @Failure 400
 // @Router /user_account [post]
 func (ctrl *userAccountController) RegisterHandler(c echo.Context) error {
-	var param application.RegisterUserAccountParam
+	var param data.RegisterUserAccountParam
 	if err := c.Bind(&param); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	if err := application.ValidateRegisterUserAccountParam(&param); err != nil {
+	if err := data.ValidateRegisterUserAccountParam(&param); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
@@ -69,17 +70,17 @@ func (ctrl *userAccountController) RegisterHandler(c echo.Context) error {
 // @Description login with user
 // @Accept json
 // @Produce json
-// @Param user body application.LoginUserAccountParam true "LoginUserAccountParam"
-// @Success 200 {object} application.LoginUserAccountResult
+// @Param user body data.LoginUserAccountParam true "LoginUserAccountParam"
+// @Success 200 {object} data.LoginUserAccountResult
 // @Failure 400,401
 // @Router /user_account/login [post]
 func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
-	var param application.LoginUserAccountParam
+	var param data.LoginUserAccountParam
 	if err := c.Bind(&param); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
-	if err := application.ValidateLoginUserAccountParam(&param); err != nil {
+	if err := data.ValidateLoginUserAccountParam(&param); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
@@ -99,7 +100,7 @@ func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
 // @Description Show a logged in user
 // @Accept json
 // @Produce json
-// @Success 200 {object} application.ShowUserAccountResult
+// @Success 200 {object} data.ShowUserAccountResult
 // @Failure 401
 // @Router /user_account [get]
 func (ctrl *userAccountController) ShowHandler(c echo.Context) error {

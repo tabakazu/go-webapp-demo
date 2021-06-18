@@ -6,21 +6,23 @@
 package main
 
 import (
-	"github.com/tabakazu/go-webapp/application"
-	"github.com/tabakazu/go-webapp/controller"
-	"github.com/tabakazu/go-webapp/gateway"
+	"github.com/tabakazu/go-webapp/application/service"
+	"github.com/tabakazu/go-webapp/external/datastore"
+	"github.com/tabakazu/go-webapp/external/datastore/repository"
+	"github.com/tabakazu/go-webapp/interfaces/webapi"
+	"github.com/tabakazu/go-webapp/interfaces/webapi/controller"
 )
 
 // Injectors from wire.go:
 
-func InitializeServer() *controller.Server {
-	dbConfig := gateway.NewDBConfig()
-	db := gateway.NewDB(dbConfig)
-	userAccountRepository := gateway.NewUserAccountRepository(db)
-	registerUserAccount := application.NewUserAccountRegisterService(userAccountRepository)
-	loginUserAccount := application.NewUserAccountLoginService(userAccountRepository)
-	showUserAccount := application.NewUserAccountShowService(userAccountRepository)
+func InitializeServer() *webapi.Server {
+	dbConfig := datastore.NewDBConfig()
+	db := datastore.NewConnection(dbConfig)
+	userAccountRepository := repository.NewUserAccountRepository(db)
+	registerUserAccount := service.NewUserAccountRegisterService(userAccountRepository)
+	loginUserAccount := service.NewUserAccountLoginService(userAccountRepository)
+	showUserAccount := service.NewUserAccountShowService(userAccountRepository)
 	userAccountController := controller.NewUserAccountController(registerUserAccount, loginUserAccount, showUserAccount)
-	server := controller.NewServer(userAccountController)
+	server := webapi.NewServer(userAccountController)
 	return server
 }
