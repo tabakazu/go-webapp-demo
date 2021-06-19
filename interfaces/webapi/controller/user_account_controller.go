@@ -3,19 +3,16 @@ package controller
 import (
 	"context"
 	"net/http"
-	"strconv"
 	"time"
 
-	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo/v4"
 	"github.com/tabakazu/go-webapp/application"
 	"github.com/tabakazu/go-webapp/application/data"
 )
 
 type UserAccountController interface {
-	RegisterHandler(echo.Context) error
-	LoginHandler(echo.Context) error
-	ShowHandler(echo.Context) error
+	RegisterHandler(Context) error
+	LoginHandler(Context) error
+	ShowHandler(Context) error
 }
 
 type userAccountController struct {
@@ -42,10 +39,10 @@ func NewUserAccountController(
 // @Accept json
 // @Produce json
 // @Param user body data.RegisterUserAccountParam true "RegisterUserAccountParam"
-// @Success 200 {object} data.RegisterUserAccountResult
+// @Success 200 {object} data.UserAccountResult
 // @Failure 400
 // @Router /user_account [post]
-func (ctrl *userAccountController) RegisterHandler(c echo.Context) error {
+func (ctrl *userAccountController) RegisterHandler(c Context) error {
 	var param data.RegisterUserAccountParam
 	if err := c.Bind(&param); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -71,10 +68,10 @@ func (ctrl *userAccountController) RegisterHandler(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param user body data.LoginUserAccountParam true "LoginUserAccountParam"
-// @Success 200 {object} data.LoginUserAccountResult
+// @Success 200 {object} data.LoginResult
 // @Failure 400,401
 // @Router /user_account/login [post]
-func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
+func (ctrl *userAccountController) LoginHandler(c Context) error {
 	var param data.LoginUserAccountParam
 	if err := c.Bind(&param); err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -100,21 +97,14 @@ func (ctrl *userAccountController) LoginHandler(c echo.Context) error {
 // @Description Show a logged in user
 // @Accept json
 // @Produce json
-// @Success 200 {object} data.ShowUserAccountResult
+// @Success 200 {object} data.UserAccountResult
 // @Failure 401
 // @Router /user_account [get]
-func (ctrl *userAccountController) ShowHandler(c echo.Context) error {
+func (ctrl *userAccountController) ShowHandler(c Context) error {
 	ctx := context.Background()
 	ctx, _ = context.WithTimeout(ctx, 1*time.Second)
 
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	userID, err := strconv.Atoi(claims["user_id"].(string))
-	if err != nil {
-		return err
-	}
-
-	r, err := ctrl.show.Execute(ctx, userID)
+	r, err := ctrl.show.Execute(ctx, c.ApiSessionUserID())
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}

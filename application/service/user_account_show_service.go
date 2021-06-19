@@ -18,12 +18,12 @@ func NewUserAccountShowService(repo domain.UserAccountRepository) application.Sh
 	}
 }
 
-func (s *userAccountShowService) Execute(ctx context.Context, userID int) (*data.ShowUserAccountResult, error) {
+func (s *userAccountShowService) Execute(ctx context.Context, userID int) (*data.UserAccountResult, error) {
 	userAccount, err := s.repo.FindByID(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 
-	result := data.NewShowUserAccountResult(userAccount)
+	result := data.NewUserAccountResult(userAccount)
 	return result, nil
 }

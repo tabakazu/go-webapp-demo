@@ -9,6 +9,7 @@ import (
 	datastoreRepo "github.com/tabakazu/go-webapp/external/datastore/repository"
 	"github.com/tabakazu/go-webapp/interfaces/webapi"
 	webapiCtrl "github.com/tabakazu/go-webapp/interfaces/webapi/controller"
+	webapiGen "github.com/tabakazu/go-webapp/interfaces/webapi/generator"
 )
 
 func InitializeServer() *webapi.Server {
@@ -16,6 +17,7 @@ func InitializeServer() *webapi.Server {
 		datastore.NewDBConfig,
 		datastore.NewConnection,
 		datastoreRepo.NewUserAccountRepository,
+		webapiGen.NewUserTokenGenerator,
 		appService.NewUserAccountRegisterService,
 		appService.NewUserAccountLoginService,
 		appService.NewUserAccountShowService,

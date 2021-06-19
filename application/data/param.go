@@ -7,20 +7,30 @@ import (
 var validate *validator.Validate
 
 type RegisterUserAccountParam struct {
-	Username             string `json:"username"`
-	FamilyName           string `json:"family_name"`
-	GivenName            string `json:"given_name"`
-	Email                string `json:"email"`
-	Password             string `json:"password"`
-	PasswordConfirmation string `json:"password_confirmation"`
+	Username             string `json:"username" validate:"required"`
+	FamilyName           string `json:"family_name" validate:"required"`
+	GivenName            string `json:"given_name" validate:"required"`
+	Email                string `json:"email" validate:"required,email"`
+	Password             string `json:"password" validate:"required"`
+	PasswordConfirmation string `json:"password_confirmation" validate:"required"`
 }
 
 func ValidateRegisterUserAccountParam(p *RegisterUserAccountParam) error {
 	validate = validator.New()
+	validate.RegisterStructValidation(registerUserAccountParamStructLevelValidation, RegisterUserAccountParam{})
+
 	if err := validate.Struct(p); err != nil {
 		return err
 	}
 	return nil
+}
+
+func registerUserAccountParamStructLevelValidation(sl validator.StructLevel) {
+	param := sl.Current().Interface().(RegisterUserAccountParam)
+
+	if param.Password != param.PasswordConfirmation {
+		sl.ReportError(param.PasswordConfirmation, "PasswordConfirmation", "PasswordConfirmation", "password_confirmation", "")
+	}
 }
 
 type LoginUserAccountParam struct {

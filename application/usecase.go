@@ -7,13 +7,13 @@ import (
 )
 
 type RegisterUserAccount interface {
-	Execute(context.Context, *data.RegisterUserAccountParam) (*data.RegisterUserAccountResult, error)
+	Execute(context.Context, *data.RegisterUserAccountParam) (*data.UserAccountResult, error)
 }
 
 type LoginUserAccount interface {
-	Execute(context.Context, *data.LoginUserAccountParam) (*data.LoginUserAccountResult, error)
+	Execute(context.Context, *data.LoginUserAccountParam) (*data.LoginResult, error)
 }
 
 type ShowUserAccount interface {
-	Execute(context.Context, int) (*data.ShowUserAccountResult, error)
+	Execute(context.Context, int) (*data.UserAccountResult, error)
 }

@@ -4,15 +4,15 @@ import (
 	"github.com/tabakazu/go-webapp/domain/entity"
 )
 
-type RegisterUserAccountResult struct {
+type UserAccountResult struct {
 	Username   string `json:"username"`
 	FamilyName string `json:"family_name"`
 	GivenName  string `json:"given_name"`
 	Email      string `json:"email"`
 }
 
-func NewRegisterUserAccountResult(e *entity.UserAccount) *RegisterUserAccountResult {
-	return &RegisterUserAccountResult{
+func NewUserAccountResult(e *entity.UserAccount) *UserAccountResult {
+	return &UserAccountResult{
 		Username:   e.Username,
 		FamilyName: e.FamilyName,
 		GivenName:  e.GivenName,
@@ -20,30 +20,14 @@ func NewRegisterUserAccountResult(e *entity.UserAccount) *RegisterUserAccountRes
 	}
 }
 
-type LoginUserAccountResult struct {
+type LoginResult struct {
 	Username string `json:"username"`
 	Token    string `json:"token"`
 }
 
-func NewLoginUserAccountResult(e *entity.UserAccount, token string) *LoginUserAccountResult {
-	return &LoginUserAccountResult{
+func NewLoginResult(e *entity.UserAccount, token string) *LoginResult {
+	return &LoginResult{
 		Username: e.Username,
 		Token:    token,
-	}
-}
-
-type ShowUserAccountResult struct {
-	Username   string `json:"username"`
-	FamilyName string `json:"family_name"`
-	GivenName  string `json:"given_name"`
-	Email      string `json:"email"`
-}
-
-func NewShowUserAccountResult(e *entity.UserAccount) *ShowUserAccountResult {
-	return &ShowUserAccountResult{
-		Username:   e.Username,
-		FamilyName: e.FamilyName,
-		GivenName:  e.GivenName,
-		Email:      e.Email,
 	}
 }

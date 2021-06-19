@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/tabakazu/go-webapp/application"
 	"github.com/tabakazu/go-webapp/application/data"
@@ -21,11 +20,7 @@ func NewUserAccountRegisterService(repo domain.UserAccountRepository) applicatio
 	}
 }
 
-func (s *userAccountRegisterService) Execute(ctx context.Context, param *data.RegisterUserAccountParam) (*data.RegisterUserAccountResult, error) {
-	if param.Password != param.PasswordConfirmation {
-		return nil, errors.New("password doesn't match password_confirmation")
-	}
-
+func (s *userAccountRegisterService) Execute(ctx context.Context, param *data.RegisterUserAccountParam) (*data.UserAccountResult, error) {
 	passHash, err := bcrypt.GenerateFromPassword([]byte(param.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
@@ -42,6 +37,6 @@ func (s *userAccountRegisterService) Execute(ctx context.Context, param *data.Re
 		return nil, err
 	}
 
-	result := data.NewRegisterUserAccountResult(&userAccount)
+	result := data.NewUserAccountResult(&userAccount)
 	return result, nil
 }

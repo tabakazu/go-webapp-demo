@@ -11,6 +11,7 @@ import (
 	"github.com/tabakazu/go-webapp/external/datastore/repository"
 	"github.com/tabakazu/go-webapp/interfaces/webapi"
 	"github.com/tabakazu/go-webapp/interfaces/webapi/controller"
+	"github.com/tabakazu/go-webapp/interfaces/webapi/generator"
 )
 
 // Injectors from wire.go:
@@ -20,7 +21,8 @@ func InitializeServer() *webapi.Server {
 	db := datastore.NewConnection(dbConfig)
 	userAccountRepository := repository.NewUserAccountRepository(db)
 	registerUserAccount := service.NewUserAccountRegisterService(userAccountRepository)
-	loginUserAccount := service.NewUserAccountLoginService(userAccountRepository)
+	userTokenGenerator := generator.NewUserTokenGenerator()
+	loginUserAccount := service.NewUserAccountLoginService(userAccountRepository, userTokenGenerator)
 	showUserAccount := service.NewUserAccountShowService(userAccountRepository)
 	userAccountController := controller.NewUserAccountController(registerUserAccount, loginUserAccount, showUserAccount)
 	server := webapi.NewServer(userAccountController)

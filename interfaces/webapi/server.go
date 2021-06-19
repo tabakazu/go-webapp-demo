@@ -23,9 +23,10 @@ func NewServer(
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.POST("/user_account", userAccountCtrl.RegisterHandler)
-	e.POST("/user_account/login", userAccountCtrl.LoginHandler)
-	e.GET("/user_account", userAccountCtrl.ShowHandler, middleware.JWT([]byte(os.Getenv("SECRET_KEY"))))
+	authMiddleware := middleware.JWT([]byte(os.Getenv("SECRET_KEY")))
+	e.POST("/user_account", func(c echo.Context) error { return userAccountCtrl.RegisterHandler(context{c}) })
+	e.POST("/user_account/login", func(c echo.Context) error { return userAccountCtrl.LoginHandler(context{c}) })
+	e.GET("/user_account", func(c echo.Context) error { return userAccountCtrl.ShowHandler(context{c}) }, authMiddleware)
 
 	return &Server{router: e}
 }
