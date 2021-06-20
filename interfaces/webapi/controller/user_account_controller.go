@@ -57,7 +57,7 @@ func (ctrl *userAccountController) RegisterHandler(c Context) error {
 
 	r, err := ctrl.register.Execute(ctx, &param)
 	if err != nil {
-		return c.String(http.StatusUnauthorized, err.Error())
+		return c.String(http.StatusBadRequest, err.Error())
 	}
 	return c.JSON(http.StatusOK, r)
 }
@@ -98,15 +98,20 @@ func (ctrl *userAccountController) LoginHandler(c Context) error {
 // @Accept json
 // @Produce json
 // @Success 200 {object} data.UserAccountResult
-// @Failure 401
+// @Failure 400,401,404
 // @Router /user_account [get]
 func (ctrl *userAccountController) ShowHandler(c Context) error {
 	ctx := context.Background()
 	ctx, _ = context.WithTimeout(ctx, 1*time.Second)
 
-	r, err := ctrl.show.Execute(ctx, c.ApiSessionUserID())
+	session := c.Session()
+	if session == nil {
+		return c.String(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+	}
+
+	r, err := ctrl.show.Execute(ctx, session.UserID)
 	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.String(http.StatusNotFound, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, r)

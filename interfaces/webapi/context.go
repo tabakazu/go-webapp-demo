@@ -1,21 +1,15 @@
 package webapi
 
 import (
-	"strconv"
-
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
+	"github.com/tabakazu/go-webapp/interfaces/webapi/controller"
 )
 
-type context struct {
+type customContext struct {
 	echo.Context
+	session *controller.Session
 }
 
-func (c context) ApiSessionUserID() int {
-	claims := c.Get("user").(*jwt.Token).Claims.(jwt.MapClaims)
-	userID, err := strconv.Atoi(claims["user_id"].(string))
-	if err != nil {
-		return 0
-	}
-	return userID
+func (c *customContext) Session() *controller.Session {
+	return c.session
 }
