@@ -7,7 +7,6 @@ import (
 	"github.com/tabakazu/go-webapp/application/data"
 	"github.com/tabakazu/go-webapp/domain"
 	"github.com/tabakazu/go-webapp/domain/entity"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type userAccountRegisterService struct {
@@ -21,7 +20,7 @@ func NewUserAccountRegisterService(repo domain.UserAccountRepository) applicatio
 }
 
 func (s *userAccountRegisterService) Execute(ctx context.Context, param *data.RegisterUserAccountParam) (*data.UserAccountResult, error) {
-	passHash, err := bcrypt.GenerateFromPassword([]byte(param.Password), bcrypt.DefaultCost)
+	digest, err := param.Password.Digest()
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +30,7 @@ func (s *userAccountRegisterService) Execute(ctx context.Context, param *data.Re
 		FamilyName:     param.FamilyName,
 		GivenName:      param.GivenName,
 		Email:          param.Email,
-		PasswordDigest: string(passHash),
+		PasswordDigest: digest,
 	}
 	if err := s.repo.Create(ctx, &userAccount); err != nil {
 		return nil, err

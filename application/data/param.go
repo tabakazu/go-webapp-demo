@@ -2,17 +2,18 @@ package data
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/tabakazu/go-webapp/domain/value"
 )
 
 var validate *validator.Validate
 
 type RegisterUserAccountParam struct {
-	Username             string `json:"username" validate:"required"`
-	FamilyName           string `json:"family_name" validate:"required"`
-	GivenName            string `json:"given_name" validate:"required"`
-	Email                string `json:"email" validate:"required,email"`
-	Password             string `json:"password" validate:"required"`
-	PasswordConfirmation string `json:"password_confirmation" validate:"required"`
+	Username             string         `json:"username" validate:"required"`
+	FamilyName           string         `json:"family_name" validate:"required"`
+	GivenName            string         `json:"given_name" validate:"required"`
+	Email                string         `json:"email" validate:"required,email"`
+	Password             value.Password `json:"password" validate:"required"`
+	PasswordConfirmation value.Password `json:"password_confirmation" validate:"required"`
 }
 
 func ValidateRegisterUserAccountParam(p *RegisterUserAccountParam) error {
@@ -34,8 +35,8 @@ func registerUserAccountParamStructLevelValidation(sl validator.StructLevel) {
 }
 
 type LoginUserAccountParam struct {
-	UsernameOrEmail string `json:"username_or_email" validate:"required"`
-	Password        string `json:"password" validate:"required"`
+	UsernameOrEmail value.UsernameOrEmail `json:"username_or_email" validate:"required"`
+	Password        value.Password        `json:"password" validate:"required"`
 }
 
 func ValidateLoginUserAccountParam(p *LoginUserAccountParam) error {

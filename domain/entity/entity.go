@@ -1,6 +1,10 @@
 package entity
 
-import "time"
+import (
+	"time"
+
+	"github.com/tabakazu/go-webapp/domain/value"
+)
 
 type UserAccount struct {
 	ID             uint
@@ -8,7 +12,11 @@ type UserAccount struct {
 	FamilyName     string
 	GivenName      string
 	Email          string
-	PasswordDigest string
+	PasswordDigest value.PasswordDigest
+}
+
+func (e UserAccount) ValidPassword(passwd value.Password) error {
+	return e.PasswordDigest.ValidPassword(passwd)
 }
 
 type User struct {
@@ -24,7 +32,7 @@ type Account struct {
 	ID             uint
 	UserID         uint `gorm:"column:user_id"`
 	Email          string
-	PasswordDigest string `gorm:"column:password_digest"`
+	PasswordDigest value.PasswordDigest `gorm:"column:password_digest"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }

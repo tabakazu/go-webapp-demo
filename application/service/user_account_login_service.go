@@ -6,7 +6,7 @@ import (
 	"github.com/tabakazu/go-webapp/application"
 	"github.com/tabakazu/go-webapp/application/data"
 	"github.com/tabakazu/go-webapp/domain"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/tabakazu/go-webapp/domain/entity"
 )
 
 type userAccountLoginService struct {
@@ -25,12 +25,18 @@ func NewUserAccountLoginService(
 }
 
 func (s *userAccountLoginService) Execute(ctx context.Context, param *data.LoginUserAccountParam) (*data.LoginResult, error) {
-	userAccount, err := s.repo.FindByUsername(ctx, param.UsernameOrEmail)
+	userAccount, err := func() (*entity.UserAccount, error) {
+		if param.UsernameOrEmail.IsEmail() {
+			return s.repo.FindByEmail(ctx, string(param.UsernameOrEmail))
+		} else {
+			return s.repo.FindByUsername(ctx, string(param.UsernameOrEmail))
+		}
+	}()
 	if err != nil {
 		return nil, err
 	}
 
-	if err := bcrypt.CompareHashAndPassword([]byte(userAccount.PasswordDigest), []byte(param.Password)); err != nil {
+	if err := userAccount.ValidPassword(param.Password); err != nil {
 		return nil, err
 	}
 
