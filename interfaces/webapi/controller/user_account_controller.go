@@ -49,7 +49,8 @@ func (ctrl *userAccountController) RegisterHandler(c Context) error {
 	}
 
 	if err := data.ValidateRegisterUserAccountParam(&param); err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
+		r := data.NewValidationError(err)
+		return c.JSON(http.StatusBadRequest, r)
 	}
 
 	ctx := context.Background()
@@ -78,7 +79,8 @@ func (ctrl *userAccountController) LoginHandler(c Context) error {
 	}
 
 	if err := data.ValidateLoginUserAccountParam(&param); err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
+		r := data.NewValidationError(err)
+		return c.JSON(http.StatusBadRequest, r)
 	}
 
 	ctx := context.Background()

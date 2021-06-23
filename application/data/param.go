@@ -5,8 +5,6 @@ import (
 	"github.com/tabakazu/go-webapp/domain/value"
 )
 
-var validate *validator.Validate
-
 type RegisterUserAccountParam struct {
 	Username             string         `json:"username" validate:"required"`
 	FamilyName           string         `json:"family_name" validate:"required"`
@@ -17,7 +15,7 @@ type RegisterUserAccountParam struct {
 }
 
 func ValidateRegisterUserAccountParam(p *RegisterUserAccountParam) error {
-	validate = validator.New()
+	validate := validator.New()
 	validate.RegisterStructValidation(registerUserAccountParamStructLevelValidation, RegisterUserAccountParam{})
 
 	if err := validate.Struct(p); err != nil {
@@ -40,7 +38,7 @@ type LoginUserAccountParam struct {
 }
 
 func ValidateLoginUserAccountParam(p *LoginUserAccountParam) error {
-	validate = validator.New()
+	validate := validator.New()
 	if err := validate.Struct(p); err != nil {
 		return err
 	}
