@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"context"
 	"net/http"
-	"time"
 
 	"github.com/tabakazu/go-webapp/application"
 	"github.com/tabakazu/go-webapp/application/data"
@@ -52,10 +50,7 @@ func (ctrl *userAccountController) RegisterHandler(c Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, data.NewValidationErrorResult(err))
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, 1*time.Second)
-
-	r, err := ctrl.register.Execute(ctx, &param)
+	r, err := ctrl.register.Execute(c.Request().Context(), &param)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, &data.ErrorResult{Message: err.Error()})
 	}
@@ -81,10 +76,7 @@ func (ctrl *userAccountController) LoginHandler(c Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, data.NewValidationErrorResult(err))
 	}
 
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, 1*time.Second)
-
-	r, err := ctrl.login.Execute(ctx, &param)
+	r, err := ctrl.login.Execute(c.Request().Context(), &param)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, &data.ErrorResult{Message: err.Error()})
 	}
@@ -101,15 +93,11 @@ func (ctrl *userAccountController) LoginHandler(c Context) error {
 // @Failure 401,404
 // @Router /user_account [get]
 func (ctrl *userAccountController) ShowHandler(c Context) error {
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, 1*time.Second)
-
-	session := c.Session()
-	if session == nil {
+	if c.Session() == nil {
 		return c.JSON(http.StatusUnauthorized, &data.ErrorResult{Message: "Your session is invalid."})
 	}
 
-	r, err := ctrl.show.Execute(ctx, session.UserID)
+	r, err := ctrl.show.Execute(c.Request().Context(), c.Session().UserID)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, &data.ErrorResult{Message: err.Error()})
 	}
