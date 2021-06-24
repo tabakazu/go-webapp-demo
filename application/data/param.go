@@ -28,7 +28,7 @@ func registerUserAccountParamStructLevelValidation(sl validator.StructLevel) {
 	param := sl.Current().Interface().(RegisterUserAccountParam)
 
 	if param.Password != param.PasswordConfirmation {
-		sl.ReportError(param.PasswordConfirmation, "PasswordConfirmation", "PasswordConfirmation", "password_confirmation", "")
+		sl.ReportError(param.PasswordConfirmation, "PasswordConfirmation", "PasswordConfirmation", "password_confirmation_mismatch", "")
 	}
 }
 

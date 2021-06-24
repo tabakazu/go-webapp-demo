@@ -69,6 +69,8 @@ paths:
             $ref: '#/definitions/data.UserAccountResult'
         "401":
           description: ""
+        "404":
+          description: ""
       summary: Show a logged in user
     post:
       consumes:
@@ -89,6 +91,8 @@ paths:
           schema:
             $ref: '#/definitions/data.UserAccountResult'
         "400":
+          description: ""
+        "422":
           description: ""
       summary: Register a user
   /user_account/login:
@@ -113,6 +117,8 @@ paths:
         "400":
           description: ""
         "401":
+          description: ""
+        "422":
           description: ""
       summary: Login with user
 swagger: "2.0"

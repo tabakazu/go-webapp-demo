@@ -40,17 +40,16 @@ func NewUserAccountController(
 // @Produce json
 // @Param user body data.RegisterUserAccountParam true "RegisterUserAccountParam"
 // @Success 200 {object} data.UserAccountResult
-// @Failure 400
+// @Failure 400,422
 // @Router /user_account [post]
 func (ctrl *userAccountController) RegisterHandler(c Context) error {
 	var param data.RegisterUserAccountParam
 	if err := c.Bind(&param); err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.JSON(http.StatusBadRequest, &data.ErrorResult{Message: err.Error()})
 	}
 
 	if err := data.ValidateRegisterUserAccountParam(&param); err != nil {
-		r := data.NewValidationError(err)
-		return c.JSON(http.StatusBadRequest, r)
+		return c.JSON(http.StatusUnprocessableEntity, data.NewValidationErrorResult(err))
 	}
 
 	ctx := context.Background()
@@ -58,7 +57,7 @@ func (ctrl *userAccountController) RegisterHandler(c Context) error {
 
 	r, err := ctrl.register.Execute(ctx, &param)
 	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.JSON(http.StatusBadRequest, &data.ErrorResult{Message: err.Error()})
 	}
 	return c.JSON(http.StatusOK, r)
 }
@@ -70,17 +69,16 @@ func (ctrl *userAccountController) RegisterHandler(c Context) error {
 // @Produce json
 // @Param user body data.LoginUserAccountParam true "LoginUserAccountParam"
 // @Success 200 {object} data.LoginResult
-// @Failure 400,401
+// @Failure 400,401,422
 // @Router /user_account/login [post]
 func (ctrl *userAccountController) LoginHandler(c Context) error {
 	var param data.LoginUserAccountParam
 	if err := c.Bind(&param); err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
+		return c.JSON(http.StatusBadRequest, &data.ErrorResult{Message: err.Error()})
 	}
 
 	if err := data.ValidateLoginUserAccountParam(&param); err != nil {
-		r := data.NewValidationError(err)
-		return c.JSON(http.StatusBadRequest, r)
+		return c.JSON(http.StatusUnprocessableEntity, data.NewValidationErrorResult(err))
 	}
 
 	ctx := context.Background()
@@ -88,7 +86,7 @@ func (ctrl *userAccountController) LoginHandler(c Context) error {
 
 	r, err := ctrl.login.Execute(ctx, &param)
 	if err != nil {
-		return c.String(http.StatusUnauthorized, err.Error())
+		return c.JSON(http.StatusUnauthorized, &data.ErrorResult{Message: err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, r)
@@ -100,7 +98,7 @@ func (ctrl *userAccountController) LoginHandler(c Context) error {
 // @Accept json
 // @Produce json
 // @Success 200 {object} data.UserAccountResult
-// @Failure 400,401,404
+// @Failure 401,404
 // @Router /user_account [get]
 func (ctrl *userAccountController) ShowHandler(c Context) error {
 	ctx := context.Background()
@@ -108,12 +106,12 @@ func (ctrl *userAccountController) ShowHandler(c Context) error {
 
 	session := c.Session()
 	if session == nil {
-		return c.String(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+		return c.JSON(http.StatusUnauthorized, &data.ErrorResult{Message: "Your session is invalid."})
 	}
 
 	r, err := ctrl.show.Execute(ctx, session.UserID)
 	if err != nil {
-		return c.String(http.StatusNotFound, err.Error())
+		return c.JSON(http.StatusNotFound, &data.ErrorResult{Message: err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, r)
