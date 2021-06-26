@@ -20,6 +20,7 @@ func NewServer(
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.HTTPErrorHandler = CustomHTTPErrorHandler
 
 	e.POST("/user_account", func(c echo.Context) error {
 		cc := c.(*customContext)
