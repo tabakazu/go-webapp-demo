@@ -1,6 +1,7 @@
 package webapi
 
 import (
+	"net/http"
 	"os"
 	"strconv"
 
@@ -18,15 +19,12 @@ func CustomContext(next echo.HandlerFunc) echo.HandlerFunc {
 }
 
 func UserTokenAuth(next echo.HandlerFunc) echo.HandlerFunc {
-	authMiddleware := middleware.JWT([]byte(os.Getenv("SECRET_KEY")))
-
-	// TODO: Using custom ErrorHandler for error message
-	// authMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
-	// 	SigningKey: []byte(os.Getenv("SECRET_KEY")),
-	// 	ErrorHandler: func(err error) error {
-	// 		return errors.New("aa")
-	// 	},
-	// })
+	authMiddleware := middleware.JWTWithConfig(middleware.JWTConfig{
+		SigningKey: []byte(os.Getenv("SECRET_KEY")),
+		ErrorHandler: func(err error) error {
+			return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
+		},
+	})
 
 	return authMiddleware(func(c echo.Context) error {
 		cc := c.(*customContext)
