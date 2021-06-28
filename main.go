@@ -1,11 +1,7 @@
 package main
 
-import (
-	"github.com/tabakazu/go-webapp/external/datastore"
-)
-
 func main() {
-	db, dbClose := datastore.NewConnection(datastore.NewDBConfig())
+	db, dbClose := InitializeDB()
 	defer dbClose()
 
 	srv := InitializeServer(db)
