@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"log"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -17,14 +18,25 @@ func NewDBConfig() *dbConfig {
 	}
 }
 
-func NewConnection(cfg *dbConfig) *gorm.DB {
+func NewConnection(cfg *dbConfig) (*gorm.DB, func()) {
 	if cfg == nil {
 		cfg = &dbConfig{}
 	}
 
 	db, err := gorm.Open(mysql.Open(cfg.dsn), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	return db
+
+	return db, func() {
+		if db != nil {
+			sqlDB, err := db.DB()
+			if err != nil {
+				log.Fatal(err)
+			}
+			if err := sqlDB.Close(); err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
 }
