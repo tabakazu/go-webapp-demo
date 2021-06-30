@@ -22,20 +22,7 @@ func NewServer(
 	e.Use(middleware.Recover())
 	e.HTTPErrorHandler = CustomHTTPErrorHandler
 
-	e.POST("/user_account", func(c echo.Context) error {
-		cc := c.(*customContext)
-		return userAccountCtrl.RegisterHandler(cc)
-	}, CustomContext)
-
-	e.POST("/user_account/login", func(c echo.Context) error {
-		cc := c.(*customContext)
-		return userAccountCtrl.LoginHandler(cc)
-	}, CustomContext)
-
-	e.GET("/user_account", func(c echo.Context) error {
-		cc := c.(*customContext)
-		return userAccountCtrl.ShowHandler(cc)
-	}, CustomContext, UserTokenAuth)
+	SetupUserAccountRoutes(e, userAccountCtrl)
 
 	return &Server{router: e}
 }
